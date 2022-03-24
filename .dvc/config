@@ -1,0 +1,4 @@
+[core]
+    remote = ml_registry
+['remote "ml_registry"']
+    url = s3://s3-training-tfavance-mlops/data-registry
