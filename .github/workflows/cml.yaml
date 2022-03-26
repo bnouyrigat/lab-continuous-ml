@@ -8,8 +8,14 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: '3.7'
+      - name: Check Dataset files existence
+        id: check_dataset_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "aclImdb_v1.tar.gz"
       - uses: iterative/setup-cml@v1
       - name: Train model
+        if: steps.check_dataset_files.outputs.files_exists == 'true'
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

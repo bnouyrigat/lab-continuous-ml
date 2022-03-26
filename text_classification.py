@@ -1,11 +1,12 @@
 import os
+import tarfile
+from os.path import exists
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import re
-import shutil
 import string
 import tensorflow as tf
 
@@ -21,16 +22,14 @@ project_path = os.path.dirname(os.path.realpath(__file__))
 # You'll use the [Large Movie Review Dataset](https://ai.stanford.edu/~amaas/data/sentiment/) that contains the text of 50,000 movie reviews from the [Internet Movie Database](https://www.imdb.com/). These are split into 25,000 reviews for training and 25,000 reviews for testing. The training and testing sets are *balanced*, meaning they contain an equal number of positive and negative reviews.
 #
 
-# Let's download and extract the dataset, then explore the directory structure.
-url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
-
-print("### Download and extract the dataset")
-dataset = tf.keras.utils.get_file("aclImdb_v1", url,
-                                  untar=True, cache_dir='.',
-                                  cache_subdir='')
-
-dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb')
+print("### Verify that dataset is present")
+dataset_targz = os.path.join(project_path, 'aclImdb_v1.tar.gz')
+assert exists(dataset_targz), "Dataset aclImdb_v1.tar.gz is missing"
+with tarfile.open(dataset_targz, "r:gz") as tar:
+    tar.extractall()
+dataset_dir = os.path.join(project_path, 'aclImdb')
 train_dir = os.path.join(dataset_dir, 'train')
+print("Dataset files:", dataset_dir)
 
 # ### Load the dataset
 #
@@ -43,11 +42,6 @@ train_dir = os.path.join(dataset_dir, 'train')
 # ......b_text_1.txt
 # ......b_text_2.txt
 # ```
-
-# To prepare a dataset for binary classification, you will need two folders on disk, corresponding to `class_a` and `class_b`. These will be the positive and negative movie reviews, which can be found in  `aclImdb/train/pos` and `aclImdb/train/neg`. As the IMDB dataset contains additional folders, you will remove them before using this utility.
-
-remove_dir = os.path.join(train_dir, 'unsup')
-shutil.rmtree(remove_dir)
 
 # Next, you will use the `text_dataset_from_directory` utility to create a labeled `tf.data.Dataset`. [tf.data](https://www.tensorflow.org/guide/data) is a powerful collection of tools for working with data.
 
