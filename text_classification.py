@@ -125,7 +125,7 @@ model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=tf.metrics.BinaryAccuracy(threshold=0.0))
 
 print("\n### Train the model")
-epochs = 10
+epochs = 1
 history = model.fit(
     train_ds,
     validation_data=val_ds,
@@ -141,7 +141,7 @@ print("Write file metrics.txt")
 with open("metrics.txt", "w") as outfile:
     outfile.write("Accuracy: " + str(accuracy) + "\n")
 
-threshold = .5
+threshold = .45
 y_pred = model.predict(test_ds.map(lambda x, y: x)).reshape((-1))
 y_pred = tf.math.greater(y_pred, threshold)
 y_pred = tf.cast(y_pred, dtype=tf.float32)
