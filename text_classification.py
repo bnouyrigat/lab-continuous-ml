@@ -141,7 +141,7 @@ print("Write file metrics.txt")
 with open("metrics.txt", "w") as outfile:
     outfile.write("Accuracy: " + str(accuracy) + "\n")
 
-threshold = .5
+threshold = .4
 y_pred = model.predict(test_ds.map(lambda x, y: x)).reshape((-1))
 y_pred = tf.math.greater(y_pred, threshold)
 y_pred = tf.cast(y_pred, dtype=tf.float32)
